@@ -10,6 +10,6 @@ ENV FLASK_APP cocktail.py
 CMD [ "flask", "run", "-h", "::" ]
 
 COPY requirements.txt ./
-COPY . .
-
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
