@@ -1,0 +1,16 @@
+[Unit]
+Description=Kubeadm bootstraping
+
+[Service]
+ConditionPathExists=!/etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+Type=oneshot
+Environment=RELEASE=v1.10.3
+ExecStart=/opt/kubeadm/bootstrap.sh
+RemainAfterExit=true
+After=network-online.target
+After=cni-bootstrap.service
+Requires=network-online.target
+Requires=cni-bootstrap.service
+
+[Install]
+WantedBy=multi-user.target

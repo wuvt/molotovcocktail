@@ -1,0 +1,103 @@
+{
+    "ignition": { "version": "2.0.0" },
+    "storage": {
+        "files": [
+            {
+                "filesystem": "root",
+                "path": "/etc/hostname",
+                "mode": 420,
+                "contents": {
+                    "source": "data:,{{ hostname[0] }}"
+                }
+            },
+            {
+                "filesystem": "root",
+                "path": "/etc/coreos/update.conf",
+                "mode": 420,
+                "contents": {
+                    "source": "data:,GROUP={{ update_channel|default('stable') }}%0AREBOOT_STRATEGY={{ update_reboot_strategy|default('etcd-lock') }}"
+                }
+            },
+            {
+                "filesystem": "root",
+                "path": "/etc/sudoers.d/01_sudoers",
+                "mode": 420,
+                "contents": {
+                    "source": "{{ include_file_data('files/sudoers.d/01_sudoers') }}"
+                }
+            },
+            {
+                "filesystem": "root",
+                "path": "/etc/ssh/sshd_config",
+                "mode": 420,
+                "contents": {
+                    "source": "{{ include_file_data('files/sshd_config') }}"
+                }
+            },
+            {
+                "filesystem": "root",
+                "path": "/etc/sssd/sssd.conf",
+                "mode": 384,
+                "contents": {
+                    "source": "{{ include_file_data('files/sssd/sssd.conf') }}"
+                }
+            },
+            {
+                "filesystem": "root",
+                "path": "/etc/ssl/sssd/ca.pem",
+                "mode": 420,
+                "contents": {
+                    "source": "{{ include_file_data('files/sssd/ca.pem') }}"
+                }
+            },
+            {
+                "filesystem": "root",
+                "path": "/opt/kubeadm/bootstrap.sh",
+                "mode": 750,
+                "contents": {
+                    "source": "{{ include_file_data('files/bootstrap.sh') }}"
+                }
+            }{% if ignition_extra_files | length > 0 %},
+            {{ ignition_extra_files | map('to_json') | join(',') }}{% endif %}
+
+        ]
+    },
+    "systemd": {
+        "units": [
+            {
+                "name": "rpc-statd.service",
+                "enable": true
+            },
+            {
+                "name": "sssd.service",
+                "enable": true
+            },
+            {
+                "name": "docker.service",
+                "enable": true
+            },
+            {
+                "name": "cni-bootstrap.service",
+                "enable": true,
+                "contents": "{{ include_file('files/systemd/cni-bootstrap.service') }}"
+            },
+            {
+                "name": "kubeadm-bootstrap.service",
+                "enable": true,
+                "contents": "{{ include_file('files/systemd/kubeadm-bootstrap.service') }}"
+            }{% if ignition_extra_services | length > 0 %},
+            {{ ignition_extra_services | map('to_json') | join(',') }}{% endif %}
+
+        ]
+    },
+    "passwd": {
+        "users": [
+            {
+                "name": "core",
+                "sshAuthorizedKeys": [
+                        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCfqooiGUYtXmUmM+DZRD5RYnYRAB9xhQCkJSkK4bWnHTTGb0/nPCp2nJS6Pr0I1FNcdWFSVRdqGLuoUi1qVy2Ka+6cc2868lV2P6sz8MJPafdw1LAvqDMEvjAicsfvz6S7Yh/OYNiiHvE8p6XTfjAKgSYS/yKLQTiwJW1lBi5V8YsEjHD3OsqMhrAbZuACe9F+GU8H3AE+zzJMo8v57M2WytLA1FTSmOovDaXhXMyXCTf5trFEbaPCl6zwb5H+xfxY0J+u5TbLbjGgvrq4op6r0wvtN/uJg8y2VWnIIHTa/qHzXeuVOWAvOq79xxy7YkltA9aFHFekBw4AXUJ0LOoB cwinkowski@localhost"
+                    ]
+            }
+        ]
+    }
+}

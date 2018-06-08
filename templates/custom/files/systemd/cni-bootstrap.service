@@ -1,0 +1,15 @@
+[Unit]
+Description=CNI bootstraping
+
+[Service]
+ConditionPathExists=!/opt/cni/bin/sample
+Type=oneshot
+Environment=CNI_VERSION=v0.6.0
+ExecStart=mkdir -p  /opt/cni/bin
+ExecStart=bash -c 'curl -L '\''https://github.com/containernetworking/plugins/releases/download/'${CNI_VERSION}'/cni-plugins-amd64-'${CNI_VERSION}'.tgz'\'' | tar -C /opt/cni/bin -xz'
+RemainAfterExit=true
+After=network-online.target
+Requires=network-online.target
+
+[Install]
+WantedBy=multi-user.target
