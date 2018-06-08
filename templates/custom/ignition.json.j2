@@ -94,9 +94,7 @@
         "users": [
             {
                 "name": "core",
-                "sshAuthorizedKeys": [
-                        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCfqooiGUYtXmUmM+DZRD5RYnYRAB9xhQCkJSkK4bWnHTTGb0/nPCp2nJS6Pr0I1FNcdWFSVRdqGLuoUi1qVy2Ka+6cc2868lV2P6sz8MJPafdw1LAvqDMEvjAicsfvz6S7Yh/OYNiiHvE8p6XTfjAKgSYS/yKLQTiwJW1lBi5V8YsEjHD3OsqMhrAbZuACe9F+GU8H3AE+zzJMo8v57M2WytLA1FTSmOovDaXhXMyXCTf5trFEbaPCl6zwb5H+xfxY0J+u5TbLbjGgvrq4op6r0wvtN/uJg8y2VWnIIHTa/qHzXeuVOWAvOq79xxy7YkltA9aFHFekBw4AXUJ0LOoB cwinkowski@localhost"
-                    ]
+                "sshAuthorizedKeys": {{ include_file('files/ssh-keys.json') }}
             }
         ]
     }
